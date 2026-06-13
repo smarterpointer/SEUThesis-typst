@@ -1,0 +1,9 @@
+# Typst build artifacts
+*.pdf
+
+# Editor / OS
+.DS_Store
+*.swp
+
+# Something private
+*_private.*
