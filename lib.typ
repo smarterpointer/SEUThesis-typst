@@ -25,6 +25,9 @@
 #let fang = ("FangSong", "仿宋", "FangSong SC", "STFangsong", "Noto Serif CJK SC") //  仿宋
 #let zhongsong = ("STZhongsong", "华文中宋", "STSong", "SimSun", "宋体", "Songti SC", "Noto Serif CJK SC") //  华文中宋 (title-page masthead)
 #let en-serif = ("Times New Roman", "SimHei", "黑体", "Noto Serif CJK SC") //  Latin-first (English cover)
+// 标题专用字体：英文优先 Times New Roman，中文回退到对应中文字体
+#let title-hei = ("Times New Roman", "SimHei", "黑体", "Heiti SC", "Noto Sans CJK SC")
+#let title-song = ("Times New Roman", "SimSun", "宋体", "Songti SC", "Noto Serif CJK SC")
 
 // ---------------------------------------------------------------------------
 // Font sizes (字号 → pt)
@@ -216,7 +219,9 @@
       counter(math.equation).update(0)
     }
     set align(center)
-    set text(font: hei, size: s-3, weight: "bold")
+    set text(font: title-hei, size: s-3, weight: "bold")
+    // 只对中文做伪加粗，避免英文 Times New Roman 被描边
+    show regex("[一-龥]+"): cjk => text(stroke: 0.022em)[#cjk]
     v(6pt)
     block(below: 18pt, {
       if it.numbering != none {
@@ -230,7 +235,7 @@
   // 三级标题（节）：四号宋体加粗居左。SimSun 无粗体字面，叠加细描边模拟加粗，
   // stroke使中文字形也呈现加粗效果（仅靠 weight:"bold" 时只有拉丁数字会变粗）→英文会双重加粗，现已修复。
   show heading.where(level: 2): it => {
-    set text(font: song, size: s-4, weight: "bold")
+    set text(font: title-song, size: s-4, weight: "bold")
     // 只对中文字符做伪加粗，避免英文被描边二次加粗
     show regex("[一-龥]+"): cjk => text(stroke: 0.022em)[#cjk]
     block(above: 14pt, below: 10pt, {
@@ -242,7 +247,7 @@
 
   // 四级标题（节内小节）：小四号黑体居左。
   show heading.where(level: 3): it => {
-    set text(font: hei, size: s-s4, weight: "regular")
+    set text(font: title-hei, size: s-s4, weight: "regular")
     block(above: 12pt, below: 8pt, {
       numbering(it.numbering, ..counter(heading).at(it.location()))
       h(0.5em)
@@ -492,7 +497,7 @@
 // 英文摘要
 #let en-abstract(keywords, body) = {
   page(numbering: "I", header: none, footer: _page-footer(pat: "I"))[
-    #heading(level: 1, numbering: none, outlined: true)[#text(font: "Times New Roman")[Abstract]]
+    #heading(level: 1, numbering: none, outlined: true)[Abstract]
     #body
     #v(1em)
     #par(first-line-indent: 0pt)[#text(
