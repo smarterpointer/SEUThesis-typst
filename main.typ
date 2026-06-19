@@ -1,9 +1,20 @@
 #import "lib.typ": *
+#import "@preview/gb7714-bilingual:0.2.3": gb7714-bibliography, init-gb7714, multicite
 
 // =============================================================================
 // SEU graduate-thesis driver. Fill in your metadata below, then write your
 // content. Compile with:  typst compile main.typ
 // =============================================================================
+
+// ---- bibliography ----
+// 参考文献采用 GB/T 7714 数字格式著录，支持中英文混排，该函数一定要放在所有引用开始之前
+#show: init-gb7714.with(
+  read("refs.bib"),
+  style: "numeric",
+  version: "2015",
+)
+
+
 #show: thesis.with(
   // ---- Chinese metadata ----
   title: "基于 Typst 的东南大学硕士学位论文模板",
@@ -70,4 +81,6 @@
 #unnumbered-chapter[致谢]
 感谢导师在本研究工作中给予的悉心指导，感谢实验室同学的帮助与支持。
 
-#bibliography("refs.bib", title: "参考文献", style: "gb-7714-2015-numeric")
+#gb7714-bibliography(
+  title: heading(level: 1, numbering: none, outlined: true)[参考文献],
+)
