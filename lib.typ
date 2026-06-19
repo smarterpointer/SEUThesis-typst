@@ -144,8 +144,8 @@
   date: "二〇二六年六月", //  中文日期
   en-date: "June 2026",
   // assets
-  banner: "figures/seu-cover-banner.jpg",
-  calligraphy: "figures/seu-title-calligraphy.png",
+  banner: "./assets/figures/seu-cover-banner.jpg",
+  calligraphy: "./assets/figures/seu-title-calligraphy.png",
   // mode
   blind: false, //  盲审 / anonymous mode
   body,
@@ -228,9 +228,11 @@
   }
 
   // 三级标题（节）：四号宋体加粗居左。SimSun 无粗体字面，叠加细描边模拟加粗，
-  // 使中文字形也呈现加粗效果（仅靠 weight:"bold" 时只有拉丁数字会变粗）。
+  // stroke使中文字形也呈现加粗效果（仅靠 weight:"bold" 时只有拉丁数字会变粗）→英文会双重加粗，现已修复。
   show heading.where(level: 2): it => {
-    set text(font: song, size: s-4, weight: "bold", stroke: 0.022em)
+    set text(font: song, size: s-4, weight: "bold")
+    // 只对中文字符做伪加粗，避免英文被描边二次加粗
+    show regex("[一-龥]+"): cjk => text(stroke: 0.022em)[#cjk]
     block(above: 14pt, below: 10pt, {
       numbering(it.numbering, ..counter(heading).at(it.location()))
       h(0.5em)
@@ -490,13 +492,13 @@
 // 英文摘要
 #let en-abstract(keywords, body) = {
   page(numbering: "I", header: none, footer: _page-footer(pat: "I"))[
-    #heading(level: 1, numbering: none, outlined: true)[Abstract]
+    #heading(level: 1, numbering: none, outlined: true)[#text(font: "Times New Roman")[Abstract]]
     #body
     #v(1em)
     #par(first-line-indent: 0pt)[#text(
         font: "Times New Roman",
         weight: "bold",
-        stroke: 0.022em,
+        // stroke: 0.022em,
       )[Key words: ]#keywords.join("; ")]
   ]
 }
